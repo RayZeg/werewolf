@@ -1,12 +1,18 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { decrypt } from "./lib/session";
 
-export default clerkMiddleware();
+export default async function middleware(req: NextRequest) {
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+  if (!session?.userId) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
-  ],
+  matcher:
+    "/((?!api|auth/signin|auth/signup|reset-password|_next/static|_next/image|favicon.ico|starter).*)",
 };
