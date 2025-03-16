@@ -1,12 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
 import { useActionState, useState } from "react";
 import { signup } from "../auth-action";
+import Link from "next/link";
 interface User {
   username: string;
   password: string;
@@ -31,8 +39,9 @@ function page() {
       <Card className="w-96">
         <CardHeader>
           <CardTitle className="text-center font-bold text-2xl">
-            Signup
+            Werewolf.io
           </CardTitle>
+          <CardDescription>Sign Up</CardDescription>
         </CardHeader>
         <CardContent>
           <form action={action}>
@@ -93,11 +102,19 @@ function page() {
               disabled={pending}
               type="submit"
             >
-              {pending && <RotateCw className=" h-4 w-4 animate-spin mr-3" />}
-              Connecter
+              {pending ? "Signing up..." : "Sign up"}
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="text-sm">
+          Already have an account?{" "}
+          <Link
+            href={"/auth/signin"}
+            className={`font-semibold hover:underline px-2`}
+          >
+            Sign in
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   );

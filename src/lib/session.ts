@@ -15,7 +15,7 @@ const cookie = {
   maxAge: 24 * 60 * 60 * 1000,
 };
 
-const key = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
+const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 
 export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
@@ -54,7 +54,7 @@ export async function getSession() {
   const session = await decrypt(cookie);
 
   return {
-    userId: session?.userId as string,
+    id: session?.userId as string,
     username: session?.username as string,
   };
 }
