@@ -18,6 +18,8 @@ model User {
   username String @unique
   password String
   Game     Game?
+
+  Players Player[]
 }
 
 model Game {
@@ -25,4 +27,20 @@ model Game {
   name    String
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id])
+
+  Players Player[]
+
+  @@index([ownerId])
+}
+
+model Player {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id])
+
+  @@index([userId, gameId])
 }
