@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
 import { useActionState, useState } from "react";
-import { signin } from "../actions";
+import { signin } from "../auth-action";
 
 interface User {
   username: string;

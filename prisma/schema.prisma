@@ -17,4 +17,11 @@ model User {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique
   password String
+  Game     Game?
+}
+
+model Game {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId String @unique @db.ObjectId
+  owner   User   @relation(fields: [ownerId], references: [id])
 }
