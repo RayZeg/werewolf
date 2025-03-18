@@ -7,5 +7,13 @@ type Game = {
   id: string;
   name: string;
   ownerId: string;
-  owner: User;
+  players: User[];
+  roles: Role[];
+};
+
+type Role = {
+  id: string;
+  name: string;
+  description: string;
+  gameId: string;
 };

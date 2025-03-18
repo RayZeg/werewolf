@@ -1,7 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { FormState, SignupFormSchema } from "@/lib/definitions";
+import {
+  FormState,
+  LoginFormSchema,
+  SignupFormSchema,
+} from "@/lib/definitions";
 import { createSession, deleteSession } from "@/lib/session";
 import bcrypt from "bcrypt";
 
@@ -45,7 +49,7 @@ export async function signup(state: FormState, formData: FormData) {
 }
 
 export async function signin(state: FormState, formData: FormData) {
-  const validatedFields = SignupFormSchema.safeParse({
+  const validatedFields = LoginFormSchema.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
   });

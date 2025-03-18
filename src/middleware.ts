@@ -1,11 +1,9 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "./lib/session";
+import { getSession } from "./lib/session";
 
 export default async function middleware(req: NextRequest) {
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
-  if (!session?.userId) {
+  const session = await getSession();
+  if (!session?.id) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 
