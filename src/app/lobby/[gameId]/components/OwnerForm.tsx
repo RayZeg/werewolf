@@ -97,7 +97,7 @@ export default function OwnerForm({
               <SheetTrigger className={buttonVariants({ variant: "default" })}>
                 Add role
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="overflow-scroll">
                 <SheetHeader>
                   <SheetTitle className="text-2xl font-bold">
                     Roles list:
@@ -144,9 +144,12 @@ export default function OwnerForm({
                           <Tooltip>
                             <TooltipTrigger
                               disabled={
-                                roles.filter((r) => r === "Werewolf").length >=
-                                  3 && role.name === "Werewolf"
-                                  ? true
+                                roles.find((r) => r === role.name)
+                                  ? role.name === "Werewolf" &&
+                                    roles.filter((r) => r === role.name)
+                                      .length <= 2
+                                    ? false
+                                    : true
                                   : false
                               }
                               onClick={() => handleAddRole(role.name)}

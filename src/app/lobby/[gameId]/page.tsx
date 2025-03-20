@@ -17,9 +17,8 @@ async function page({ params }: { params: Promise<{ gameId: string }> }) {
   //check if the user is already in the game
   if (!game.players.find((player) => player.id === session.id)) {
     await db.user.update({ where: { id: session.id }, data: { gameId } });
+    game.players = [...game.players, session];
   }
-
-  game.players = [...game.players, session];
 
   if (game.ownerId === session.id)
     return <OwnerForm session={session} game={game} />;
