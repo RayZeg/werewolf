@@ -1,8 +1,7 @@
 import { db } from "@/lib/db";
-import OwnerForm from "./components/OwnerForm";
 import { getSession } from "@/lib/session";
+import OwnerForm from "./components/OwnerForm";
 import PlayerFrom from "./components/PlayerFrom";
-import { revalidatePath } from "next/cache";
 
 async function page({ params }: { params: Promise<{ gameId: string }> }) {
   const session = await getSession();
@@ -20,12 +19,7 @@ async function page({ params }: { params: Promise<{ gameId: string }> }) {
     await db.user.update({ where: { id: session.id }, data: { gameId } });
   }
 
-  game = await db.game.findUnique({
-    where: { id: gameId },
-    include: { players: true },
-  });
-
-  if (!game) return <div>Game not found</div>;
+  game.players = [...game.players, session];
 
   if (game.ownerId === session.id)
     return <OwnerForm session={session} game={game} />;
