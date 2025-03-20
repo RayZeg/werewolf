@@ -16,6 +16,7 @@ export default function PlayerFrom({
   game: Game;
 }) {
   const [players, setPlayers] = useState<User[]>(game.players);
+  const [roles, setRoles] = useState<string[]>(game.roles);
   const router = useRouter();
 
   function leaveGame() {
@@ -36,6 +37,7 @@ export default function PlayerFrom({
         .get(`/api/game/${game.id}`)
         .then((res) => {
           console.log(res);
+          setRoles(res.data.roles);
           setPlayers(res.data.players);
         })
         .catch((error) => console.log(error))
@@ -55,7 +57,7 @@ export default function PlayerFrom({
             {game.roles.length === 0 ? (
               <p>No roles yet.</p>
             ) : (
-              game.roles.map((role, index) => (
+              roles.map((role, index) => (
                 <li key={index} className="text-nowrap">
                   <p>- {role}</p>
                 </li>

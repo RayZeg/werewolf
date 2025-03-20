@@ -7,7 +7,7 @@ async function page({ params }: { params: Promise<{ gameId: string }> }) {
   const session = await getSession();
   const { gameId } = await params;
 
-  let game: Game | null = await db.game.findUnique({
+  const game: Game | null = await db.game.findUnique({
     where: { id: gameId },
     include: { players: true },
   });
