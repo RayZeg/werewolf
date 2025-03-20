@@ -7,10 +7,10 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const { gameId } = await req.json();
+    const { gameId, role } = await req.json();
     const user = await db.user.update({
       where: { id },
-      data: { gameId },
+      data: { gameId, role },
     });
     if (!user) return new NextResponse(null, { status: 404 });
     return new Response(null, { status: 200 });

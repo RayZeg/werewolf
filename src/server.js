@@ -18,14 +18,9 @@ app.prepare().then(() => {
     console.log("a user connected");
 
     //refreshing frontend players list
-    socket.on("fetchPlayers", (gameId) => {
+    socket.on("refreshGameData", (gameId) => {
       socket.join(gameId);
-      socket.to(gameId).emit("fetchPlayers", null);
-    });
-
-    socket.on("privateMessage", (gameId) => {
-      console.log("recieved in the backend");
-      socket.to(gameId).emit("privateMessage", null);
+      socket.to(gameId).emit("refreshGameData", null);
     });
 
     //kicking all players from game on owners leave

@@ -1,0 +1,74 @@
+{
+  "Villagers": [
+    {
+      "name": "Villager",
+      "description": "An ordinary townsperson with no special abilities. Their goal is to identify and eliminate all werewolves."
+    },
+    {
+      "name": "Seer",
+      "description": "Each night, the Seer can learn the true identity (Werewolf or Villager) of one player. Their goal is to use this information to help the village identify the werewolves."
+    },
+    {
+      "name": "Doctor",
+      "description": "The Doctor can choose one person to protect each night, including themselves, preventing that person from being killed by the werewolves."
+    },
+    {
+      "name": "Hunter",
+      "description": "If the Hunter is killed (by vote or by werewolves), they can immediately kill one other player in revenge."
+    },
+    {
+      "name": "Cupid",
+      "description": "On the first night, Cupid selects two players to be lovers. If one lover dies, the other dies of heartbreak. The lovers win if they are the last players standing, regardless of their original teams."
+    }
+  ],
+  "Werewolves": [
+    {
+      "name": "Werewolf",
+      "description": "Each night, the werewolves choose one player to kill. They must remain hidden and deceive the villagers during the day to avoid being lynched."
+    },
+    {
+      "name": "Alpha Werewolf",
+      "description": "The Alpha Werewolf is the leader of the werewolves and may have additional abilities, such as being immune to the Seer's visions or being able to convert villagers into werewolves."
+    },
+    {
+      "name": "Mystic Werewolf",
+      "description": "The Mystic Werewolf can see who the Seer is checking each night, allowing them to better strategize and mislead the village."
+    }
+  ],
+  "Special Roles": [
+    {
+      "name": "Sorceress",
+      "description": "The Sorceress has two potions: one to save a player from death and one to kill a player. Each potion can be used only once in the game."
+    },
+    {
+      "name": "Tanner",
+      "description": "The Tanner hates his job and wants to die. He wins if he gets himself lynched by the village."
+    },
+    {
+      "name": "Doppelganger",
+      "description": "At the start of the game, the Doppelganger chooses another player's name to copy and assumes all abilities and win conditions of that name for the rest of the game."
+    },
+    {
+      "name": "Cursed",
+      "description": "The Cursed appears as a normal villager to the Seer, but if the werewolves try to kill the Cursed, he becomes a werewolf."
+    }
+  ],
+  "Roles to be Added": [
+    {
+      "name": "Priest",
+      "description": "The Priest can bless one player per night, protecting them from being killed by the werewolves."
+    },
+    {
+      "name": "Knight",
+      "description": "The Knight can challenge one player to a duel. If the challenged player is a werewolf, they die; otherwise, the Knight dies."
+    },
+    {
+      "name": "Wolf Cub",
+      "description": "The Wolf Cub is a young werewolf. If the Wolf Cub is killed, the werewolves get to make two kills the following night in retaliation."
+    },
+    {
+      "name": "Lycan",
+      "description": "The Lycan is a villager who, due to a curse, appears as a werewolf to the Seer. This makes them a potential target to be voted out despite their innocence."
+    }
+  ]
+}

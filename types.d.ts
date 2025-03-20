@@ -8,12 +8,5 @@ type Game = {
   name: string;
   ownerId: string;
   players: User[];
-  roles: Role[];
-};
-
-type Role = {
-  id: string;
-  name: string;
-  description: string;
-  gameId: string;
+  roles: string[];
 };

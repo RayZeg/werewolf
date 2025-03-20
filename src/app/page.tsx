@@ -14,7 +14,7 @@ import Link from "next/link";
 
 export default async function Home() {
   const games: Game[] = await db.game.findMany({
-    include: { players: true, roles: true },
+    include: { players: true },
   });
   return (
     <>

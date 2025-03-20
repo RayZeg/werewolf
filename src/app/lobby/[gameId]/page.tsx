@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import OwnerForm from "./components/OwnerForm";
 import { getSession } from "@/lib/session";
 import PlayerFrom from "./components/PlayerFrom";
+import { revalidatePath } from "next/cache";
 
 async function page({ params }: { params: Promise<{ gameId: string }> }) {
   const session = await getSession();
@@ -9,7 +10,7 @@ async function page({ params }: { params: Promise<{ gameId: string }> }) {
 
   let game: Game | null = await db.game.findUnique({
     where: { id: gameId },
-    include: { players: true, roles: true },
+    include: { players: true },
   });
 
   if (!game) return <div>Game not found</div>;
@@ -21,7 +22,7 @@ async function page({ params }: { params: Promise<{ gameId: string }> }) {
 
   game = await db.game.findUnique({
     where: { id: gameId },
-    include: { players: true, roles: true },
+    include: { players: true },
   });
 
   if (!game) return <div>Game not found</div>;

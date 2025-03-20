@@ -8,9 +8,10 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
+  id       String  @id @default(uuid())
+  username String  @unique
   password String
+  role     String?
 
   gameId String?
   Game   Game?   @relation(fields: [gameId], references: [id])
@@ -23,19 +24,8 @@ model Game {
   name    String
   ownerId String @unique
 
-  roles   Role[]
+  roles   String[]
   players User[]
 
   @@index([ownerId])
-}
-
-model Role {
-  id          String @id @default(uuid())
-  name        String
-  description String
-
-  gameId String
-  Game   Game   @relation(fields: [gameId], references: [id])
-
-  @@index([gameId])
 }
