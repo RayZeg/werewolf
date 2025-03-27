@@ -9,7 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getSession } from "@/lib/session";
 import { LogOut, User } from "lucide-react";
 
 export default function UserIcon({ session }: { session: User }) {

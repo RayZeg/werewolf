@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
-import { error } from "console";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 

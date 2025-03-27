@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
 import { socket } from "@/socket";
 import axios from "axios";
 import { CrownIcon } from "lucide-react";
@@ -15,38 +16,65 @@ export default function PlayerFrom({
   session: { id: string; username: string };
   game: Game;
 }) {
+  const myChannel = supabase.channel(game.id);
   const [players, setPlayers] = useState<User[]>(game.players);
   const [roles, setRoles] = useState<string[]>(game.roles);
   const router = useRouter();
 
-  function leaveGame() {
-    axios
-      .patch(`/api/user/${session.id}`, { gameId: null })
-      .then(() => {
-        socket.emit("fetchPlayers", game.id);
-      })
-      .catch((error) => console.log(error))
-      .finally(() => router.push("/"));
-  }
+  // function leaveGame() {
+  //   axios
+  //     .patch(`/api/user/${session.id}`, { gameId: null })
+  //     .then(() => {
+  //       myChannel.send({
+  //         type: "broadcast",
+  //         event: "refreshGameData",
+  //       });
+  //     })
+  //     .catch((error) => console.log(error))
+  //     .finally(() => router.push("/"));
+  // }
 
   useEffect(() => {
-    socket.on("privateMessage", () => console.log("hello"));
-    socket.on("ownerLeft", () => router.push("/"));
-    socket.on("fetchPlayers", () =>
-      axios
-        .get(`/api/game/${game.id}`)
-        .then((res) => {
-          console.log(res);
-          setRoles(res.data.roles);
-          setPlayers(res.data.players);
-        })
-        .catch((error) => console.log(error))
-    );
-    socket.emit("fetchPlayers", game.id);
+    myChannel
+      .on("presence", { event: "sync" }, () => {
+        const newState = myChannel.presenceState();
+        console.log("sync", newState);
+      })
+      .on("presence", { event: "join" }, ({ key, newPresences }) => {
+        console.log("join", key, newPresences);
+      })
+      .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+        console.log("leave", key, leftPresences);
+      })
+      .subscribe();
+
+    myChannel.subscribe(async (status) => {
+      if (status !== "SUBSCRIBED") {
+        return;
+      }
+      const presenceTrackStatus = await myChannel.track(session);
+      console.log(presenceTrackStatus);
+    });
+
+    // myChannel
+    //   .on("broadcast", { event: "ownerLeft" }, () => router.push("/"))
+    //   .subscribe();
+
+    // myChannel
+    //   .on("broadcast", { event: "refreshGameData" }, () =>
+    //     axios
+    //       .get(`/api/game/${game.id}`)
+    //       .then((res) => {
+    //         setPlayers(res.data.players);
+    //         setRoles(res.data.roles);
+    //       })
+    //       .catch((error) => console.log(error))
+    //   )
+    //   .subscribe();
     return () => {
-      socket.disconnect();
+      myChannel.unsubscribe();
     };
-  }, []);
+  }, [session.id]);
 
   return (
     <main className="flex justify-center items-center h-dvh">
@@ -80,7 +108,10 @@ export default function PlayerFrom({
               </li>
             ))}
           </ul>
-          <Button variant={"destructive"} onClick={leaveGame}>
+          <Button
+            variant={"destructive"}
+            // onClick={leaveGame}
+          >
             Leave Game
           </Button>
         </section>

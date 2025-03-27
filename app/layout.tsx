@@ -32,7 +32,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900`}
       >
-        {session?.username && <UserIcon session={session} />}
+        {/* {session?.username && <UserIcon session={session} />} */}
         <Toaster />
         {children}
       </body>
