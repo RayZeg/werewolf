@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, RotateCw } from "lucide-react";
-import { useActionState, useState } from "react";
-import { signin } from "../auth-action";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useActionState, useEffect, useState } from "react";
+import { signin, verifySession } from "../auth-action";
+import { useRouter } from "next/navigation";
 
 interface User {
   username: string;

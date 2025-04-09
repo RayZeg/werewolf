@@ -20,9 +20,10 @@ model User {
 }
 
 model Game {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
-  ownerId String @unique
+  started Boolean @default(false)
+  ownerId String  @unique
 
   roles   String[]
   players User[]

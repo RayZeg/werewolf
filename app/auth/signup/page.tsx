@@ -12,9 +12,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, RotateCw } from "lucide-react";
-import { useActionState, useState } from "react";
-import { signup } from "../auth-action";
+import { useActionState, useEffect, useState } from "react";
+import { signup, verifySession } from "../auth-action";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 interface User {
   username: string;
   password: string;

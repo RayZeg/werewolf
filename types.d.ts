@@ -9,4 +9,5 @@ type Game = {
   ownerId: string;
   players: User[];
   roles: string[];
+  started: boolean;
 };

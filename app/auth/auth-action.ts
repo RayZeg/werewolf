@@ -6,8 +6,9 @@ import {
   LoginFormSchema,
   SignupFormSchema,
 } from "@/lib/definitions";
-import { createSession, deleteSession } from "@/lib/session";
+import { createSession, decrypt, deleteSession } from "@/lib/session";
 import bcrypt from "bcrypt";
+import { cookies } from "next/headers";
 
 export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
@@ -88,4 +89,14 @@ export async function signin(state: FormState, formData: FormData) {
 
 export async function signout() {
   await deleteSession();
+}
+
+export async function verifySession() {
+  const cookie = await (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+
+  return {
+    id: session?.userId as string,
+    username: session?.username as string,
+  };
 }

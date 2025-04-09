@@ -1,25 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
-import { supabase } from "@/lib/supabase";
 import axios from "axios";
 import { CrownIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddRoleButton from "./AddRoleButton";
-import { set } from "zod";
+import { socket } from "@/lib/socket";
+import { toast } from "sonner";
 
-export default function OwnerForm({
-  session,
-  game,
-}: {
-  session: { id: string; username: string };
-  game: Game;
-}) {
+export default function OwnerForm({ game }: { game: Game }) {
+  const router = useRouter();
   const [roles, setRoles] = useState(game.roles);
   const [players, setPlayers] = useState<User[]>(game.players);
-  const router = useRouter();
 
   function handleAddRole(role: string) {
     axios
@@ -29,14 +22,9 @@ export default function OwnerForm({
       })
       .then(() => {
         setRoles([...roles, role]);
+        socket.emit("refreshData", game.id);
       })
-      .catch((error) => console.log(error))
-      .finally(() =>
-        supabase.channel(game.id).send({
-          type: "broadcast",
-          event: "refreshGameData",
-        })
-      );
+      .catch((error) => console.log(error));
   }
 
   function handleRemoveRole(targetIndex: number) {
@@ -47,30 +35,56 @@ export default function OwnerForm({
       })
       .then(() => {
         setRoles(roles.filter((r, index) => index !== targetIndex));
+        socket.emit("refreshData", game.id);
       })
-      .catch((error) => console.log(error))
-      .finally(() =>
-        supabase.channel(game.id).send({
-          type: "broadcast",
-          event: "refreshGameData",
-        })
-      );
+      .catch((error) => console.log(error));
   }
 
   function leaveGame() {
     axios
       .delete(`/api/game/${game.id}`)
       .then(() => {
-        supabase.channel(game.id).send({
-          type: "broadcast",
-          event: "ownerLeft",
-        });
+        socket.emit("ownerLeft", game.id);
       })
       .catch((error) => console.log(error))
       .finally(() => router.push("/"));
   }
 
-  useEffect(() => {}, []);
+  async function refreshData() {
+    try {
+      const { data }: { data: Game } = await axios.get(`/api/game/${game.id}`);
+      setPlayers(
+        data.players.sort((a, b) => a.username.localeCompare(b.username))
+      );
+    } catch (error) {
+      toast.error("An error occurred while refreshing the data: " + error);
+    }
+  }
+
+  function startGame() {
+    axios
+      .post(`/api/game/${game.id}/start`, { gameId: game.id })
+      .then(() => {
+        socket.emit("startGame", { gameId: game.id, players });
+      })
+      .catch((error) => console.log(error))
+      .finally(() => router.push("/game/" + game.id));
+  }
+
+  function kickPlayer(player: User) {
+    axios
+      .patch(`/api/user/${player.id}`, { ...player, gameId: null })
+      .then(() => {
+        socket.emit("kickPlayer", { gameId: game.id, playerId: player.id });
+      });
+  }
+
+  useEffect(() => {
+    socket.on("refreshData", refreshData).emit("joinGame", game.id);
+    return () => {
+      socket.removeAllListeners();
+    };
+  }, []);
 
   return (
     <main className="flex justify-center items-center h-dvh">
@@ -89,7 +103,7 @@ export default function OwnerForm({
                   key={index}
                   className="flex justify-between items-center text-nowrap disabled:text-black disabled:cursor-not-allowed disabled:bg-red-400 bg-gray-200 w-full text-left p-2 rounded-lg hover:bg-gray-300 transition transform duration-200 ease-in-out cursor-default"
                 >
-                  <p>- {role}</p>
+                  <p>{role}</p>
                   <Button
                     variant={"destructive"}
                     className="cursor-pointer"
@@ -105,9 +119,6 @@ export default function OwnerForm({
         <section className="text-white bg-zinc-800 p-5 rounded-r-2xl w-[300px]">
           <div className="flex justify-between items-center text-nowrap">
             <h1 className="text-2xl font-bold">Player list:</h1>
-            <Button variant={"destructive"} onClick={leaveGame}>
-              Leave Game
-            </Button>
           </div>
           <ul className="mb-2">
             {players.map((player) => (
@@ -122,6 +133,12 @@ export default function OwnerForm({
               </li>
             ))}
           </ul>
+          <div className="flex justify-evenly">
+            <Button onClick={startGame}>Start Game</Button>
+            <Button variant={"destructive"} onClick={leaveGame}>
+              Leave Game
+            </Button>
+          </div>
         </section>
       </div>
     </main>
